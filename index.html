@@ -879,6 +879,10 @@ async function fetchSuggestions(query){
   try{
     const res = await fetch(`https://api.themoviedb.org/3/search/${tmdbType}?api_key=${TMDB_KEY}&language=es-419&query=${encodeURIComponent(query)}`);
     const data = await res.json();
+    if(data.success === false || data.status_code){
+      box.innerHTML = `<div class="suggestion-loading">Error de TMDb: ${escapeHTML(data.status_message || 'clave inválida o sin activar')} (código ${escapeHTML(String(data.status_code || res.status))})</div>`;
+      return;
+    }
     if(!data.results || !data.results.length){
       box.innerHTML = `<div class="suggestion-loading">Sin resultados. Puedes escribir el título tal cual y buscar manual abajo.</div>`;
       return;
